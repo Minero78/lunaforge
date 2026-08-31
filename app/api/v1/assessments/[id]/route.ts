@@ -1,5 +1,5 @@
-import { jsonError } from "../../../../../../lib/api/errors";
-import { getAssessment } from "../../../../../../lib/assessments/store";
+import { jsonError } from "../../../../../lib/api/errors";
+import { getAssessment } from "../../../../../lib/assessments/store";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
