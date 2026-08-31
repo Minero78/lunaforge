@@ -1,5 +1,5 @@
-import { jsonError } from "../../../../../lib/api/errors";
-import { createAssessment } from "../../../../../lib/assessments/store";
+import { jsonError } from "../../../../lib/api/errors";
+import { createAssessment } from "../../../../lib/assessments/store";
 
 export async function POST() {
   const assessment = createAssessment();
