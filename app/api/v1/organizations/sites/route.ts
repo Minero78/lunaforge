@@ -1,12 +1,10 @@
-import { jsonError } from "../../../../../../lib/api/errors";
-import { createSupabaseServerClient } from "../../../../../../lib/supabase/server";
-import { getOrganizationContext } from "../../../../../../lib/supabase/auth-context";
+import { jsonError } from "../../../../../lib/api/errors";
+import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
+import { getOrganizationContext } from "../../../../../lib/supabase/auth-context";
 
 export async function GET() {
   const supabase = await createSupabaseServerClient();
-  const context = await getOrganizationContext(supabase);
-  if (!context) return jsonError("Organization context required.", 401, "ORGANIZATION_CONTEXT_REQUIRED");
-
+  const context = await getOrganizationContext();
   const { data, error } = await supabase.from("sites").select("id, name, code, location, created_at, updated_at").eq("organization_id", context.organizationId).order("name");
   if (error) return jsonError("Unable to load sites.", 500, "SITES_READ_FAILED");
   return Response.json({ sites: data ?? [] });
@@ -14,8 +12,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
-  const context = await getOrganizationContext(supabase);
-  if (!context) return jsonError("Organization context required.", 401, "ORGANIZATION_CONTEXT_REQUIRED");
+  const context = await getOrganizationContext();
   if (context.role === "MEMBER") return jsonError("Administrator permission required.", 403, "ADMIN_REQUIRED");
 
   let body: unknown;
