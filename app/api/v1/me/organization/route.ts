@@ -1,5 +1,5 @@
-import { jsonError } from "../../../../../../lib/api/errors";
-import { createSupabaseServerClient } from "../../../../../../lib/supabase/server";
+import { jsonError } from "../../../../../lib/api/errors";
+import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
 
 export async function GET() {
   const supabase = await createSupabaseServerClient();
