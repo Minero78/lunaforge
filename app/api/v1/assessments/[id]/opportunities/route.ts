@@ -1,6 +1,6 @@
-import { jsonError } from "../../../../../../../lib/api/errors";
-import { assessmentRepository } from "../../../../../../../lib/assessments/service";
-import { deriveConsultingOpportunities } from "../../../../../../../lib/intelligence/opportunities";
+import { jsonError } from "../../../../../../lib/api/errors";
+import { assessmentRepository } from "../../../../../../lib/assessments/service";
+import { deriveConsultingOpportunities } from "../../../../../../lib/intelligence/opportunities";
 
 interface RouteContext { params: Promise<{ id: string }> }
 
