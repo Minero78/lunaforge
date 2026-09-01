@@ -5,6 +5,12 @@ import Link from "next/link";
 
 type Site = { id: string; name: string; code: string | null; location: string | null };
 
+async function fetchSites() {
+  const response = await fetch("/api/v1/organizations/sites");
+  const body = await response.json();
+  return { response, body };
+}
+
 export default function SitesPage() {
   const [sites, setSites] = useState<Site[]>([]);
   const [name, setName] = useState("");
@@ -12,14 +18,15 @@ export default function SitesPage() {
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
 
-  async function load() {
-    const response = await fetch("/api/v1/organizations/sites");
-    const body = await response.json();
-    if (response.ok) setSites(body.sites ?? []);
-    else setMessage(body.error?.message ?? "Unable to load sites.");
-  }
-
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    fetchSites().then(({ response, body }) => {
+      if (cancelled) return;
+      if (response.ok) setSites(body.sites ?? []);
+      else setMessage(body.error?.message ?? "Unable to load sites.");
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   async function create(event: FormEvent) {
     event.preventDefault();
@@ -27,7 +34,9 @@ export default function SitesPage() {
     const response = await fetch("/api/v1/organizations/sites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, code, location }) });
     const body = await response.json();
     if (!response.ok) return setMessage(body.error?.message ?? "Unable to create site.");
-    setName(""); setCode(""); setLocation(""); await load();
+    setName(""); setCode(""); setLocation("");
+    const refreshed = await fetchSites();
+    if (refreshed.response.ok) setSites(refreshed.body.sites ?? []);
   }
 
   return (
