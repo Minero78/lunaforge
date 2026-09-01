@@ -1,6 +1,5 @@
 -- Stratova / MIS foundation schema
 -- B12: production persistence foundation
--- Safe to apply after the Supabase project is created.
 
 create extension if not exists pgcrypto;
 
@@ -107,6 +106,7 @@ create table if not exists public.opportunities (
 
 create table if not exists public.leads (
   id uuid primary key default gen_random_uuid(),
+  organization_id uuid references public.organizations(id) on delete set null,
   assessment_id uuid references public.assessments(id) on delete set null,
   first_name text not null,
   last_name text,
@@ -124,6 +124,7 @@ create index if not exists responses_assessment_idx on public.assessment_respons
 create index if not exists evidence_assessment_idx on public.evidence(assessment_id);
 create index if not exists findings_assessment_idx on public.findings(assessment_id);
 create index if not exists opportunities_assessment_idx on public.opportunities(assessment_id);
+create index if not exists leads_organization_idx on public.leads(organization_id);
 create index if not exists leads_email_idx on public.leads(lower(email));
 
 alter table public.organizations enable row level security;
@@ -137,7 +138,3 @@ alter table public.evidence enable row level security;
 alter table public.findings enable row level security;
 alter table public.opportunities enable row level security;
 alter table public.leads enable row level security;
-
--- RLS policies are intentionally added in the next migration after the
--- application authentication/organization-membership contract is finalized.
--- This prevents a partially correct authorization model from being deployed.
