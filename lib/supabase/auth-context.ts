@@ -1,9 +1,11 @@
 import { createSupabaseServerClient } from "./server";
 
+export type OrganizationRole = "OWNER" | "ADMIN" | "CONSULTANT" | "MEMBER";
+
 export type OrganizationContext = {
   userId: string;
   organizationId: string;
-  role: "OWNER" | "ADMIN" | "MEMBER";
+  role: OrganizationRole;
 };
 
 export async function getOrganizationContext(): Promise<OrganizationContext> {
@@ -13,7 +15,7 @@ export async function getOrganizationContext(): Promise<OrganizationContext> {
   if (userError || !user) throw new Error("AUTHENTICATION_REQUIRED");
 
   const { data, error } = await supabase
-    .from("organization_members")
+    .from<{ organization_id: string; role: OrganizationRole }>("organization_members")
     .select("organization_id, role")
     .eq("user_id", user.id)
     .order("created_at", { ascending: true })
