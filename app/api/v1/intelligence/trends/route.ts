@@ -3,6 +3,15 @@ import { buildDimensionTrends, buildIntelligenceTrend, type AssessmentSnapshot }
 import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
 import { getOrganizationContext } from "../../../../../lib/supabase/auth-context";
 
+type AssessmentResultRow = {
+  assessment_id: string;
+  overall_score: number | string;
+  maturity: string;
+  dimension_scores: AssessmentSnapshot["dimensionScores"];
+  calculated_at: string;
+  assessments: { organization_id: string; site_id: string | null };
+};
+
 export async function GET() {
   try {
     const supabase = await createSupabaseServerClient();
@@ -16,7 +25,7 @@ export async function GET() {
 
     if (error) return jsonError("Unable to load intelligence history.", 500, "INTELLIGENCE_HISTORY_FAILED");
 
-    const history: AssessmentSnapshot[] = (data ?? []).map((row) => ({
+    const history: AssessmentSnapshot[] = ((data ?? []) as unknown as AssessmentResultRow[]).map((row) => ({
       id: row.assessment_id,
       siteId: row.assessments.site_id ?? undefined,
       completedAt: row.calculated_at,
