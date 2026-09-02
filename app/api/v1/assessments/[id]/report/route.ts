@@ -1,6 +1,6 @@
-import { jsonError } from "../../../../../../lib/api/errors";
-import { assessmentRepository } from "../../../../../../lib/assessments/service";
-import { buildReportData } from "../../../../../../lib/reports/builder";
+import { jsonError } from "@/lib/api/errors";
+import { assessmentRepository } from "@/lib/assessments/service";
+import { buildReportData } from "@/lib/reports/builder";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
