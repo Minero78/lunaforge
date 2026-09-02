@@ -1,6 +1,6 @@
 import type { AssessmentRecord } from "@/lib/assessments/store";
 import { deriveConsultingOpportunities } from "@/lib/intelligence/opportunities";
-import { buildRoadmap } from "@/lib/intelligence/roadmap";
+import { buildTransformationRoadmap } from "@/lib/intelligence/roadmap";
 
 export function buildConsultantWorkspace(assessment: AssessmentRecord) {
   if (!assessment.result) {
@@ -8,7 +8,7 @@ export function buildConsultantWorkspace(assessment: AssessmentRecord) {
   }
 
   const opportunities = deriveConsultingOpportunities(assessment.result);
-  const roadmap = buildRoadmap(opportunities);
+  const roadmap = buildTransformationRoadmap(opportunities);
 
   return {
     assessmentId: assessment.id,
