@@ -67,13 +67,28 @@ create policy leads_delete_admin
 on public.leads for delete
 using (public.is_org_admin(organization_id));
 
--- Prevent members from changing an assessment's tenant after creation.
+-- Tenant identity must never be changed through an assessment update.
+create or replace function public.prevent_assessment_org_change()
+returns trigger
+language plpgsql
+security invoker
+set search_path = public
+as $$
+begin
+  if new.organization_id is distinct from old.organization_id then
+    raise exception using errcode = '42501', message = 'Assessment organization cannot be changed';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists assessments_organization_immutable on public.assessments;
+create trigger assessments_organization_immutable
+before update on public.assessments
+for each row execute procedure public.prevent_assessment_org_change();
+
 drop policy if exists assessments_update_member on public.assessments;
 create policy assessments_update_member
 on public.assessments for update
 using (public.is_org_member(organization_id))
-with check (organization_id is not distinct from (
-  select a.organization_id
-  from public.assessments a
-  where a.id = id
-));
+with check (public.is_org_member(organization_id));
