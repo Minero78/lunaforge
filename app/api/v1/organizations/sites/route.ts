@@ -1,6 +1,6 @@
-import { jsonError } from "../../../../../lib/api/errors";
-import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
-import { getOrganizationContext } from "../../../../../lib/supabase/auth-context";
+import { jsonError } from "@/lib/api/errors";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getOrganizationContext } from "@/lib/supabase/auth-context";
 
 export async function GET() {
   const supabase = await createSupabaseServerClient();
