@@ -1,12 +1,13 @@
 import { jsonError } from "@/lib/api/errors";
 import { buildDimensionTrends, buildIntelligenceTrend, type AssessmentSnapshot } from "@/lib/intelligence/history";
+import type { MisMaturity } from "@/lib/mis/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getOrganizationContext } from "@/lib/supabase/auth-context";
 
 type AssessmentResultRow = {
   assessment_id: string;
   overall_score: number | string;
-  maturity: string;
+  maturity: MisMaturity;
   dimension_scores: AssessmentSnapshot["dimensionScores"];
   calculated_at: string;
   assessments: Array<{ organization_id: string; site_id: string | null }>;
