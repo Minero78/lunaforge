@@ -1,7 +1,7 @@
-import { jsonError } from "../../../../../lib/api/errors";
-import { buildDimensionTrends, buildIntelligenceTrend, type AssessmentSnapshot } from "../../../../../lib/intelligence/history";
-import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
-import { getOrganizationContext } from "../../../../../lib/supabase/auth-context";
+import { jsonError } from "@/lib/api/errors";
+import { buildDimensionTrends, buildIntelligenceTrend, type AssessmentSnapshot } from "@/lib/intelligence/history";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getOrganizationContext } from "@/lib/supabase/auth-context";
 
 type AssessmentResultRow = {
   assessment_id: string;
