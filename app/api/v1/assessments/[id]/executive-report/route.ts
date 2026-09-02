@@ -1,21 +1,36 @@
 import { NextResponse } from "next/server";
-import { buildExecutiveReport } from "../../../../../../lib/reports/executive";
-import type { MisScoringResult } from "../../../../../../lib/mis/types";
-import type { ConsultingOpportunity } from "../../../../../../lib/intelligence/opportunities";
-import type { RoadmapPhase } from "../../../../../../lib/intelligence/roadmap";
+import { assessmentRepository } from "@/lib/assessments/service";
+import { deriveConsultingOpportunities } from "@/lib/intelligence/opportunities";
+import { buildTransformationRoadmap } from "@/lib/intelligence/roadmap";
+import { buildExecutiveReport } from "@/lib/reports/executive";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const body = (await request.json()) as {
-    clientName?: string;
-    result?: MisScoringResult;
-    opportunities?: ConsultingOpportunity[];
-    roadmap?: RoadmapPhase[];
-  };
-
-  if (!body.clientName || !body.result || !body.opportunities || !body.roadmap) {
-    return NextResponse.json({ error: "clientName, result, opportunities, and roadmap are required" }, { status: 400 });
+  let body: { clientName?: string };
+  try {
+    body = (await request.json()) as { clientName?: string };
+  } catch {
+    return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 });
   }
 
-  return NextResponse.json({ assessmentId: id, report: buildExecutiveReport(body.clientName, body.result, body.opportunities, body.roadmap) });
+  if (!body.clientName?.trim()) {
+    return NextResponse.json({ error: "clientName is required" }, { status: 400 });
+  }
+
+  try {
+    const assessment = await assessmentRepository.getAssessment(id);
+    if (!assessment) return NextResponse.json({ error: "Assessment not found" }, { status: 404 });
+    if (assessment.status !== "SCORED" || !assessment.result) {
+      return NextResponse.json({ error: "Assessment has not been completed" }, { status: 409 });
+    }
+
+    const opportunities = deriveConsultingOpportunities(assessment.result);
+    const roadmap = buildTransformationRoadmap(opportunities);
+    return NextResponse.json({
+      assessmentId: id,
+      report: buildExecutiveReport(body.clientName.trim(), assessment.result, opportunities, roadmap),
+    });
+  } catch {
+    return NextResponse.json({ error: "Unable to build executive report" }, { status: 500 });
+  }
 }
