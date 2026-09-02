@@ -2,7 +2,7 @@ import { createSupabaseServerClient } from "./server";
 import { getCurrentUserOrganizationId } from "./auth-context";
 import { MIS_QUICKSCAN_QUESTIONS } from "../mis/questions";
 import { calculateMisScore } from "../mis/scoring";
-import { parsePersistedResult, type MisPersistedResult } from "../mis/result";
+import { parsePersistedResult, withDerivedResultContext, type MisPersistedResult } from "../mis/result";
 import type { MisResponse } from "../mis/types";
 import type { AssessmentRecord } from "../assessments/store";
 import type { AssessmentRepository } from "../assessments/repository";
@@ -101,13 +101,13 @@ export const supabaseAssessmentRepository: AssessmentRepository = {
       if (!result) throw new Error("SCORED_RESULT_MISSING");
       return toRecord(assessment, responses, result);
     }
-    const result = calculateMisScore(responses, MIS_QUICKSCAN_QUESTIONS);
+    const result = withDerivedResultContext(calculateMisScore(responses, MIS_QUICKSCAN_QUESTIONS));
     const now = new Date().toISOString();
-    const { error: resultError } = await supabase.from("assessment_results").upsert({ assessment_id: id, overall_score: result.overallScore, maturity: result.maturity, dimension_scores: result.dimensionScores, strengths: [], gaps: [], constraints: [], opportunities: [], roadmap: [], framework_version: "MIS-1.0", engine_version: "ENGINE-1.0", calculated_at: now }, { onConflict: "assessment_id" });
+    const { error: resultError } = await supabase.from("assessment_results").upsert({ assessment_id: id, overall_score: result.overallScore, maturity: result.maturity, dimension_scores: result.dimensionScores, strengths: result.strengths, gaps: result.gaps, constraints: result.constraints, opportunities: result.opportunities, roadmap: result.roadmap, framework_version: "MIS-1.0", engine_version: "ENGINE-1.0", calculated_at: now }, { onConflict: "assessment_id" });
     if (resultError) throw new Error(`ASSESSMENT_RESULT_WRITE_FAILED:${resultError.message}`);
     const { data: updated, error: updateError } = await supabase.from<AssessmentRow>("assessments").update({ status: "SCORED", completed_at: now, updated_at: now }).eq("id", id).eq("status", "IN_PROGRESS").select("id, assessment_type, framework_version, engine_version, status, created_at, updated_at, completed_at").maybeSingle();
     if (updateError) throw new Error(`ASSESSMENT_COMPLETE_FAILED:${updateError.message}`);
     if (!updated) throw new Error("ASSESSMENT_COMPLETION_CONFLICT");
-    return toRecord(updated, responses, { ...result, strengths: [], gaps: [], constraints: [], opportunities: [], roadmap: [] });
+    return toRecord(updated, responses, result);
   },
 };
