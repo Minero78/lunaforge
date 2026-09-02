@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listConsultingOpportunities } from "@/lib/consulting/opportunity-repository";
+import type { CommercialOpportunity } from "@/lib/consulting/opportunity";
 
 const stages = [
   ["IDENTIFIED", "New opportunities generated from diagnostics."],
@@ -10,7 +11,7 @@ const stages = [
 ] as const;
 
 export default async function ConsultantPipelinePage() {
-  let opportunities = [];
+  let opportunities: CommercialOpportunity[] = [];
   try {
     opportunities = await listConsultingOpportunities();
   } catch {
