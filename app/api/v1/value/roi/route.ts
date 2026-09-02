@@ -45,9 +45,9 @@ export async function POST(request: Request) {
         investment,
         expected_annual_benefit: expectedAnnualBenefit,
         actual_annual_benefit: actualAnnualBenefit ?? null,
-        currency: currency ? currency.toUpperCase() : null,
-        roi_percent: roi.roiPercent,
-        payback_months: roi.paybackMonths,
+        currency: roi.currency,
+        roi_percent: roi.expectedRoiPercent,
+        payback_months: roi.expectedPaybackMonths,
       }, { onConflict: "organization_id,opportunity_id" })
       .select("id, opportunity_id, investment, expected_annual_benefit, actual_annual_benefit, currency, roi_percent, payback_months, created_at, updated_at")
       .single();
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message === "AUTHENTICATION_REQUIRED") return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
+    if (message === "ORGANIZATION_CONTEXT_REQUIRED") return NextResponse.json({ error: "Organization context is required" }, { status: 403 });
     return NextResponse.json({ error: "Unable to calculate or persist ROI" }, { status: 500 });
   }
 }
