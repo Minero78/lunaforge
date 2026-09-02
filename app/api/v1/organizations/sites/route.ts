@@ -34,7 +34,9 @@ export async function POST(request: Request) {
   try {
     const supabase = await createSupabaseServerClient();
     const context = await getOrganizationContext();
-    if (context.role === "MEMBER") return jsonError("Administrator permission required.", 403, "ADMIN_REQUIRED");
+    if (context.role === "MEMBER" || context.role === "CONSULTANT") {
+      return jsonError("Administrator permission required.", 403, "ADMIN_REQUIRED");
+    }
 
     let body: unknown;
     try { body = await request.json(); } catch { return jsonError("Request body must be valid JSON.", 400, "INVALID_JSON"); }
