@@ -19,34 +19,25 @@ const serviceMap: Record<string, { title: string; service: string }> = {
   value: { title: "Value realization", service: "Mining technology value realization and benefits management" },
 };
 
-const priorityRank: Record<ConsultingOpportunity["priority"], number> = {
-  HIGH: 0,
-  MEDIUM: 1,
-  LOW: 2,
-};
+const priorityRank: Record<ConsultingOpportunity["priority"], number> = { HIGH: 0, MEDIUM: 1, LOW: 2 };
 
 export function deriveConsultingOpportunities(result: MisScoringResult): ConsultingOpportunity[] {
-  const opportunities = result.dimensionScores.reduce<ConsultingOpportunity[]>((items, dimension) => {
-    const key = dimension.dimension.toLowerCase();
-    const mapped = Object.entries(serviceMap).find(([name]) => key.includes(name));
-    if (!mapped) return items;
-
-    const [, service] = mapped;
-    const priority: ConsultingOpportunity["priority"] =
-      dimension.score < 41 ? "HIGH" : dimension.score < 61 ? "MEDIUM" : "LOW";
-    const impact: ConsultingOpportunity["impact"] = dimension.score < 41 ? "HIGH" : "MEDIUM";
-
-    items.push({
-      dimension: dimension.dimension,
-      title: service.title,
-      rationale: `${dimension.dimension} scored ${dimension.score}/100, indicating a ${priority.toLowerCase()}-priority improvement opportunity.`,
-      suggestedService: service.service,
-      priority,
-      impact,
-    });
-
-    return items;
-  }, []);
-
-  return opportunities.sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority]);
+  return result.dimensionScores
+    .reduce<ConsultingOpportunity[]>((items, dimension) => {
+      const key = dimension.dimension.toLowerCase();
+      const mapped = serviceMap[key];
+      if (!mapped) return items;
+      const priority = dimension.score < 41 ? "HIGH" : dimension.score < 61 ? "MEDIUM" : "LOW";
+      const impact = dimension.score < 41 ? "HIGH" : "MEDIUM";
+      items.push({
+        dimension: dimension.dimension,
+        title: mapped.title,
+        rationale: `${dimension.dimension} scored ${dimension.score}/100, indicating a ${priority.toLowerCase()}-priority improvement opportunity.`,
+        suggestedService: mapped.service,
+        priority,
+        impact,
+      });
+      return items;
+    }, [])
+    .sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority]);
 }
