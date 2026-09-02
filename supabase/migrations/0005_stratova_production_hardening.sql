@@ -5,8 +5,10 @@ alter table public.sites
   add column if not exists code text,
   add column if not exists location text;
 
+-- The application normalizes lead emails to lowercase before upsert, so a plain
+-- unique index matches the PostgREST on_conflict target exactly.
 create unique index if not exists leads_organization_email_unique_idx
-  on public.leads (organization_id, lower(email));
+  on public.leads (organization_id, email);
 
 -- Lead capture in the authenticated product is member-scoped. The assessment
 -- remains the authorization boundary; public lead capture should use a dedicated
