@@ -9,7 +9,7 @@ type AssessmentResultRow = {
   maturity: string;
   dimension_scores: AssessmentSnapshot["dimensionScores"];
   calculated_at: string;
-  assessments: { organization_id: string; site_id: string | null };
+  assessments: Array<{ organization_id: string; site_id: string | null }>;
 };
 
 export async function GET() {
@@ -25,14 +25,17 @@ export async function GET() {
 
     if (error) return jsonError("Unable to load intelligence history.", 500, "INTELLIGENCE_HISTORY_FAILED");
 
-    const history: AssessmentSnapshot[] = ((data ?? []) as unknown as AssessmentResultRow[]).map((row) => ({
-      id: row.assessment_id,
-      siteId: row.assessments.site_id ?? undefined,
-      completedAt: row.calculated_at,
-      overallScore: Number(row.overall_score),
-      maturity: row.maturity,
-      dimensionScores: row.dimension_scores,
-    }));
+    const history: AssessmentSnapshot[] = ((data ?? []) as unknown as AssessmentResultRow[]).map((row) => {
+      const assessment = row.assessments[0];
+      return {
+        id: row.assessment_id,
+        siteId: assessment?.site_id ?? undefined,
+        completedAt: row.calculated_at,
+        overallScore: Number(row.overall_score),
+        maturity: row.maturity,
+        dimensionScores: row.dimension_scores,
+      };
+    });
 
     return Response.json({ trend: buildIntelligenceTrend(history), dimensions: buildDimensionTrends(history), history });
   } catch (error) {
