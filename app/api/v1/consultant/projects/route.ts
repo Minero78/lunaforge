@@ -1,6 +1,8 @@
 import { jsonError } from "@/lib/api/errors";
 import { createProjectFromWonOpportunity, listConsultingProjects } from "@/lib/consulting/project-repository";
 
+const isoDate = /^\d{4}-\d{2}-\d{2}$/;
+
 export async function GET() {
   try {
     return Response.json({ projects: await listConsultingProjects() });
@@ -18,6 +20,14 @@ export async function POST(request: Request) {
     };
     if (typeof body.opportunityId !== "string" || !body.opportunityId) return jsonError("opportunityId is required.", 400, "OPPORTUNITY_ID_REQUIRED");
     if (typeof body.name !== "string" || !body.name.trim()) return jsonError("name is required.", 400, "PROJECT_NAME_REQUIRED");
+    for (const [field, value] of [["startDate", body.startDate], ["targetEndDate", body.targetEndDate]] as const) {
+      if (value !== undefined && value !== null && (typeof value !== "string" || !isoDate.test(value))) {
+        return jsonError(`${field} must use YYYY-MM-DD format or null.`, 400, "INVALID_PROJECT_DATE");
+      }
+    }
+    if (body.startDate && body.targetEndDate && String(body.targetEndDate) < String(body.startDate)) {
+      return jsonError("targetEndDate cannot precede startDate.", 400, "PROJECT_END_BEFORE_START");
+    }
     if (body.contractValue !== undefined && body.contractValue !== null &&
       (typeof body.contractValue !== "number" || !Number.isFinite(body.contractValue) || body.contractValue < 0)) {
       return jsonError("contractValue must be a non-negative number or null.", 400, "INVALID_CONTRACT_VALUE");
