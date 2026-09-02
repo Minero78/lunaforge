@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { assessmentRepository } from "@/lib/assessments/service";
-import { deriveConsultingOpportunities } from "@/lib/intelligence/opportunities";
-import { buildTransformationRoadmap } from "@/lib/intelligence/roadmap";
 import { buildConsultingProposal } from "@/lib/consulting/proposal";
+import { syncConsultingOpportunities } from "@/lib/consulting/opportunity-service";
+import { buildTransformationRoadmap } from "@/lib/intelligence/roadmap";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -24,7 +24,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Assessment has not been completed" }, { status: 409 });
     }
 
-    const opportunities = deriveConsultingOpportunities(assessment.result);
+    const opportunities = await syncConsultingOpportunities(id);
     const roadmap = buildTransformationRoadmap(opportunities);
     return NextResponse.json({
       assessmentId: id,
@@ -35,7 +35,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         currency: body.currency,
       }),
     });
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "AUTHENTICATION_REQUIRED") return NextResponse.json({ error: "Authentication is required" }, { status: 401 });
     return NextResponse.json({ error: "Unable to build proposal" }, { status: 500 });
   }
 }
