@@ -1,5 +1,6 @@
 "use client";
 
+type AuthPayload = { access_token?: string; user?: unknown; [key: string]: unknown };
 type AuthResult = { data: { user?: unknown; session?: unknown } | null; error: { message: string } | null };
 
 function getConfig() {
@@ -23,11 +24,22 @@ async function authRequest(path: string, body: unknown): Promise<AuthResult> {
     body: JSON.stringify(body),
   });
   const text = await response.text();
-  let data: any = null;
-  if (text) { try { data = JSON.parse(text); } catch { data = { message: text }; } }
-  if (!response.ok) return { data: null, error: { message: data?.msg ?? data?.message ?? "Authentication request failed." } };
-  persistAccessToken(data?.access_token);
-  return { data: { user: data?.user, session: data }, error: null };
+  let data: AuthPayload = {};
+  if (text) {
+    try {
+      const parsed: unknown = JSON.parse(text);
+      if (parsed && typeof parsed === "object") data = parsed as AuthPayload;
+      else data = { message: text };
+    } catch {
+      data = { message: text };
+    }
+  }
+  if (!response.ok) {
+    const message = typeof data.msg === "string" ? data.msg : typeof data.message === "string" ? data.message : "Authentication request failed.";
+    return { data: null, error: { message } };
+  }
+  persistAccessToken(data.access_token);
+  return { data: { user: data.user, session: data }, error: null };
 }
 
 export function createSupabaseBrowserClient() {
