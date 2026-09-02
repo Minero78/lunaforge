@@ -2,7 +2,8 @@ import { createSupabaseServerClient } from "./server";
 import { getCurrentUserOrganizationId } from "./auth-context";
 import { MIS_QUICKSCAN_QUESTIONS } from "../mis/questions";
 import { calculateMisScore } from "../mis/scoring";
-import type { MisResponse, MisScoringResult } from "../mis/types";
+import { parsePersistedResult, type MisPersistedResult } from "../mis/result";
+import type { MisResponse } from "../mis/types";
 import type { AssessmentRecord } from "../assessments/store";
 import type { AssessmentRepository } from "../assessments/repository";
 
@@ -20,8 +21,8 @@ type AssessmentRow = {
 type ResponseRow = { question_id: string; score: number };
 type ResultRow = {
   overall_score: number | string;
-  maturity: MisScoringResult["maturity"];
-  dimension_scores: MisScoringResult["dimensionScores"];
+  maturity: MisPersistedResult["maturity"];
+  dimension_scores: MisPersistedResult["dimensionScores"];
   strengths: unknown;
   gaps: unknown;
   constraints: unknown;
@@ -29,7 +30,7 @@ type ResultRow = {
   roadmap: unknown;
 };
 
-function toRecord(row: AssessmentRow, responses: MisResponse[], result?: MisScoringResult): AssessmentRecord {
+function toRecord(row: AssessmentRow, responses: MisResponse[], result?: MisPersistedResult): AssessmentRecord {
   if (row.status === "ARCHIVED") throw new Error("ARCHIVED_ASSESSMENT");
   return {
     id: row.id,
@@ -51,17 +52,11 @@ async function loadResponses(supabase: Awaited<ReturnType<typeof createSupabaseS
   return (data ?? []).map((row) => ({ questionId: row.question_id, score: row.score as MisResponse["score"] }));
 }
 
-async function loadResult(supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>, assessmentId: string): Promise<MisScoringResult | undefined> {
+async function loadResult(supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>, assessmentId: string): Promise<MisPersistedResult | undefined> {
   const { data, error } = await supabase.from<ResultRow>("assessment_results").select("overall_score, maturity, dimension_scores, strengths, gaps, constraints, opportunities, roadmap").eq("assessment_id", assessmentId).maybeSingle();
   if (error) throw new Error(`ASSESSMENT_RESULT_READ_FAILED:${error.message}`);
   if (!data) return undefined;
-  return {
-    frameworkVersion: "MIS-1.0",
-    engineVersion: "ENGINE-1.0",
-    overallScore: Number(data.overall_score),
-    maturity: data.maturity,
-    dimensionScores: data.dimension_scores,
-  };
+  return parsePersistedResult(data);
 }
 
 export const supabaseAssessmentRepository: AssessmentRepository = {
@@ -88,7 +83,7 @@ export const supabaseAssessmentRepository: AssessmentRepository = {
     const { data: assessment, error: assessmentError } = await supabase.from<AssessmentRow>("assessments").select("id, assessment_type, framework_version, engine_version, status, created_at, updated_at, completed_at").eq("id", assessmentId).maybeSingle();
     if (assessmentError) throw new Error(`ASSESSMENT_READ_FAILED:${assessmentError.message}`);
     if (!assessment) throw new Error("ASSESSMENT_NOT_FOUND");
-    if (assessment.status === "SCORED") throw new Error("ASSESSMENT_ALREADY_COMPLETED");
+    if (assessment.status !== "IN_PROGRESS") throw new Error("ASSESSMENT_NOT_EDITABLE");
     const { error } = await supabase.from("assessment_responses").upsert({ assessment_id: assessmentId, question_id: questionId, score }, { onConflict: "assessment_id,question_id" });
     if (error) throw new Error(`ASSESSMENT_RESPONSE_WRITE_FAILED:${error.message}`);
     return toRecord(assessment, await loadResponses(supabase, assessmentId), await loadResult(supabase, assessmentId));
@@ -100,6 +95,7 @@ export const supabaseAssessmentRepository: AssessmentRepository = {
     if (error) throw new Error(`ASSESSMENT_READ_FAILED:${error.message}`);
     if (!assessment) throw new Error("ASSESSMENT_NOT_FOUND");
     const responses = await loadResponses(supabase, id);
+    if (assessment.status === "ARCHIVED") throw new Error("ARCHIVED_ASSESSMENT");
     if (assessment.status === "SCORED") {
       const result = await loadResult(supabase, id);
       if (!result) throw new Error("SCORED_RESULT_MISSING");
@@ -107,11 +103,11 @@ export const supabaseAssessmentRepository: AssessmentRepository = {
     }
     const result = calculateMisScore(responses, MIS_QUICKSCAN_QUESTIONS);
     const now = new Date().toISOString();
-    const { error: resultError } = await supabase.from("assessment_results").upsert({ assessment_id: id, overall_score: result.overallScore, maturity: result.maturity, dimension_scores: result.dimensionScores, strengths: result.strengths, gaps: result.gaps, constraints: result.constraints, opportunities: result.opportunities, roadmap: result.roadmap, framework_version: "MIS-1.0", engine_version: "ENGINE-1.0", calculated_at: now }, { onConflict: "assessment_id" });
+    const { error: resultError } = await supabase.from("assessment_results").upsert({ assessment_id: id, overall_score: result.overallScore, maturity: result.maturity, dimension_scores: result.dimensionScores, strengths: [], gaps: [], constraints: [], opportunities: [], roadmap: [], framework_version: "MIS-1.0", engine_version: "ENGINE-1.0", calculated_at: now }, { onConflict: "assessment_id" });
     if (resultError) throw new Error(`ASSESSMENT_RESULT_WRITE_FAILED:${resultError.message}`);
     const { data: updated, error: updateError } = await supabase.from<AssessmentRow>("assessments").update({ status: "SCORED", completed_at: now, updated_at: now }).eq("id", id).eq("status", "IN_PROGRESS").select("id, assessment_type, framework_version, engine_version, status, created_at, updated_at, completed_at").maybeSingle();
     if (updateError) throw new Error(`ASSESSMENT_COMPLETE_FAILED:${updateError.message}`);
     if (!updated) throw new Error("ASSESSMENT_COMPLETION_CONFLICT");
-    return toRecord(updated, responses, result);
+    return toRecord(updated, responses, { ...result, strengths: [], gaps: [], constraints: [], opportunities: [], roadmap: [] });
   },
 };
