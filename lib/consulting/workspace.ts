@@ -1,13 +1,16 @@
 import type { AssessmentRecord } from "@/lib/assessments/store";
-import { deriveConsultingOpportunities } from "@/lib/intelligence/opportunities";
+import { deriveConsultingOpportunities, type ConsultingOpportunity } from "@/lib/intelligence/opportunities";
 import { buildTransformationRoadmap } from "@/lib/intelligence/roadmap";
 
-export function buildConsultantWorkspace(assessment: AssessmentRecord) {
+export function buildConsultantWorkspace(
+  assessment: AssessmentRecord,
+  persistedOpportunities?: ConsultingOpportunity[],
+) {
   if (!assessment.result) {
     return { assessmentId: assessment.id, status: assessment.status, score: null, maturity: null, opportunities: [], roadmap: [] };
   }
 
-  const opportunities = deriveConsultingOpportunities(assessment.result);
+  const opportunities = persistedOpportunities ?? deriveConsultingOpportunities(assessment.result);
   const roadmap = buildTransformationRoadmap(opportunities);
 
   return {
