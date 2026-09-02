@@ -1,8 +1,42 @@
-import { createBrowserClient } from "@supabase/ssr";
+"use client";
 
-export function createSupabaseBrowserClient() {
+type AuthResult = { data: { user?: unknown; session?: unknown } | null; error: { message: string } | null };
+
+function getConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) throw new Error("SUPABASE_PUBLIC_CONFIG_MISSING");
-  return createBrowserClient(url, anonKey);
+  return { url: url.replace(/\/$/, ""), anonKey };
+}
+
+function persistAccessToken(accessToken: string | undefined) {
+  if (!accessToken) return;
+  document.cookie = `stratova-access-token=${encodeURIComponent(accessToken)}; Path=/; Max-Age=3600; SameSite=Lax`;
+  window.localStorage.setItem("stratova-access-token", accessToken);
+}
+
+async function authRequest(path: string, body: unknown): Promise<AuthResult> {
+  const { url, anonKey } = getConfig();
+  const response = await fetch(`${url}/auth/v1/${path}`, {
+    method: "POST",
+    headers: { apikey: anonKey, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const text = await response.text();
+  let data: any = null;
+  if (text) { try { data = JSON.parse(text); } catch { data = { message: text }; } }
+  if (!response.ok) return { data: null, error: { message: data?.msg ?? data?.message ?? "Authentication request failed." } };
+  persistAccessToken(data?.access_token);
+  return { data: { user: data?.user, session: data }, error: null };
+}
+
+export function createSupabaseBrowserClient() {
+  return {
+    auth: {
+      signInWithPassword: ({ email, password }: { email: string; password: string }) =>
+        authRequest("token?grant_type=password", { email, password }),
+      signUp: ({ email, password, options }: { email: string; password: string; options?: { data?: Record<string, unknown> } }) =>
+        authRequest("signup", { email, password, data: options?.data }),
+    },
+  };
 }
