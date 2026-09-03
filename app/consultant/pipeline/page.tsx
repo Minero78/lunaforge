@@ -12,8 +12,7 @@ const stages = [
 ] as const;
 
 export default async function ConsultantPipelinePage() {
-  let opportunities: CommercialOpportunity[] = [];
-  try { opportunities = await listConsultingOpportunities(); } catch { opportunities = []; }
+  const opportunities = await listConsultingOpportunities();
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
