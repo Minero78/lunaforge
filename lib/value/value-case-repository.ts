@@ -41,7 +41,8 @@ export async function listValueCases(): Promise<ValueCase[]> {
     .eq("organization_id", context.organizationId)
     .order("updated_at", { ascending: false });
   if (result.error) throw new Error(`VALUE_CASE_READ_FAILED:${result.error.message}`);
-  return (result.data ?? []).map(mapValueCase);
+  const rows = Array.isArray(result.data) ? (result.data as Record<string, unknown>[]) : [];
+  return rows.map(mapValueCase);
 }
 
 function mapValueCase(row: Record<string, unknown>): ValueCase {
