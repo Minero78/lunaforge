@@ -13,7 +13,8 @@ export async function listConsultingOpportunities(assessmentId?: string): Promis
   if (assessmentId) query = query.eq("assessment_id", assessmentId);
   const { data, error } = await query;
   if (error) throw new Error(`CONSULTING_OPPORTUNITIES_READ_FAILED:${error.message}`);
-  return (data ?? []).map(mapOpportunity);
+  const rows = Array.isArray(data) ? (data as Record<string, unknown>[]) : [];
+  return rows.map(mapOpportunity);
 }
 
 export async function updateConsultingOpportunity(
@@ -50,6 +51,7 @@ export async function updateConsultingOpportunity(
     .select("id, organization_id, assessment_id, dimension, title, rationale, suggested_service, priority, impact, stage, estimated_value, currency, created_at, updated_at")
     .single();
   if (updated.error) throw new Error(`CONSULTING_OPPORTUNITY_WRITE_FAILED:${updated.error.message}`);
+  if (!updated.data) throw new Error("CONSULTING_OPPORTUNITY_WRITE_EMPTY");
   return mapOpportunity(updated.data as Record<string, unknown>);
 }
 
