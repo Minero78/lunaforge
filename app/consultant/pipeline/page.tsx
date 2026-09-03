@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { listConsultingOpportunities } from "@/lib/consulting/opportunity-repository";
-import type { CommercialOpportunity } from "@/lib/consulting/opportunity";
 import { PipelineActions } from "./PipelineActions";
 import { OpportunityActions } from "./OpportunityActions";
 
