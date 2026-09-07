@@ -12,10 +12,7 @@ export async function syncConsultingOpportunities(assessmentId: string): Promise
   if (assessment.status !== "SCORED" || !assessment.result) throw new Error("ASSESSMENT_NOT_SCORED");
 
   const derived = deriveConsultingOpportunities(assessment.result);
-
-  if (!useSupabase) {
-    return derived.map((item) => toCommercialOpportunity(item, assessment.id, "memory"));
-  }
+  if (!useSupabase) return derived.map((item) => toCommercialOpportunity(item, assessment.id, "memory"));
 
   const context = await getOrganizationContext();
   const supabase = await createSupabaseServerClient();
@@ -26,9 +23,8 @@ export async function syncConsultingOpportunities(assessmentId: string): Promise
     .eq("assessment_id", assessment.id);
 
   if (existing.error) throw new Error(`CONSULTING_OPPORTUNITIES_READ_FAILED:${existing.error.message}`);
-  const existingByDimension = new Map(
-    (existing.data ?? []).map((row) => [String(row.dimension), row]),
-  );
+  const existingRows = Array.isArray(existing.data) ? (existing.data as Record<string, unknown>[]) : [];
+  const existingByDimension = new Map(existingRows.map((row) => [String(row.dimension), row]));
 
   const payload = derived.map((item) => {
     const previous = existingByDimension.get(item.dimension);
@@ -58,10 +54,7 @@ export async function syncConsultingOpportunities(assessmentId: string): Promise
   return listPersistedConsultingOpportunities(assessment.id, context.organizationId);
 }
 
-async function listPersistedConsultingOpportunities(
-  assessmentId: string,
-  organizationId: string,
-): Promise<CommercialOpportunity[]> {
+async function listPersistedConsultingOpportunities(assessmentId: string, organizationId: string): Promise<CommercialOpportunity[]> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from<Record<string, unknown>>("consulting_opportunities")
@@ -71,7 +64,8 @@ async function listPersistedConsultingOpportunities(
     .order("updated_at", { ascending: false });
   if (error) throw new Error(`CONSULTING_OPPORTUNITIES_READ_FAILED:${error.message}`);
 
-  return (data ?? []).map((row) => ({
+  const rows = Array.isArray(data) ? (data as Record<string, unknown>[]) : [];
+  return rows.map((row) => ({
     id: String(row.id),
     organizationId: String(row.organization_id),
     assessmentId: String(row.assessment_id),
