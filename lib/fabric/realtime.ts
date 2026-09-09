@@ -1,0 +1,1 @@
+export function processRealtimeSignal(input:{value:number;threshold:number}){return {...input,triggered:input.value>=input.threshold,processedAt:new Date().toISOString()};}
