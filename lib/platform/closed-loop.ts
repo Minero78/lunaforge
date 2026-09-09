@@ -1,0 +1,1 @@
+import {persistEvent} from "./persistent-events";import {DomainEvents} from "./domain-events";export async function completeClosedLoop(input:{organizationId:string;projectId:string;interventionId:string;before:unknown;after:unknown;learning:unknown}){return persistEvent({organizationId:input.organizationId,type:DomainEvents.CLOSED_LOOP_COMPLETED,payload:input});}
