@@ -1,0 +1,1 @@
+export function createWorkflow(steps:string[]){return {id:crypto.randomUUID(),steps,status:'READY' as const};}
