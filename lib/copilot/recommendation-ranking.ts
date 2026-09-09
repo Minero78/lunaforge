@@ -1,0 +1,1 @@
+export function rankRecommendations(projects:any[]){return projects.flatMap(p=>(p.recommendedActions??[]).map((a:any)=>({...a,projectName:p.name,score:(p.interventionPriorityScore??0)+(a.urgency==="CRITICAL"?30:a.urgency==="HIGH"?15:0)}))).sort((a,b)=>b.score-a.score);}
