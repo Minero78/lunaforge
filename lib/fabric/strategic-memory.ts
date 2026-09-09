@@ -1,0 +1,1 @@
+const memory=new Map<string,unknown[]>();export function remember(key:string,value:unknown){memory.set(key,[...(memory.get(key)??[]),{value,at:new Date().toISOString()}]);}export function recall(key:string){return memory.get(key)??[];}
