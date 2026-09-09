@@ -1,0 +1,1 @@
+const levels=["LOW","MEDIUM","HIGH","CRITICAL"];export function escalateSeverity(severity:string,reason:string){const i=Math.max(0,levels.indexOf(severity));return {previous:severity,next:levels[Math.min(i+1,levels.length-1)],reason,escalated:i<levels.length-1};}
