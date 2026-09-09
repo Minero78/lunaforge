@@ -1,0 +1,1 @@
+export function scoreSignalQuality(input:{completeness:number;freshness:number;consistency:number}){return (input.completeness+input.freshness+input.consistency)/3;}
