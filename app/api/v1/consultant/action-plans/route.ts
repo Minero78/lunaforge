@@ -1,0 +1,1 @@
+import {NextRequest,NextResponse} from "next/server";import {generateSuggestedActionPlan} from "@/lib/execution/action-plan-generator";export async function POST(r:NextRequest){try{return NextResponse.json({plan:generateSuggestedActionPlan(await r.json())});}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"PLAN_FAILED"},{status:400});}}
