@@ -1,0 +1,1 @@
+export function correlate(a:number[],b:number[]){const n=Math.min(a.length,b.length);if(!n)return 0;const ma=a.slice(0,n).reduce((x,y)=>x+y,0)/n,mb=b.slice(0,n).reduce((x,y)=>x+y,0)/n;let num=0,da=0,db=0;for(let i=0;i<n;i++){const x=a[i]-ma,y=b[i]-mb;num+=x*y;da+=x*x;db+=y*y;}return num/Math.sqrt((da*db)||1);}
