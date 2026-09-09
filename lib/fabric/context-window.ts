@@ -1,0 +1,1 @@
+export function createContextWindow<T>(items:T[],limit=50){return items.slice(-limit);}
