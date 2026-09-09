@@ -1,0 +1,1 @@
+export function compareProjects(projects:any[]){return projects.map(p=>({name:p.name,risk:p.predictiveRiskScore,priority:p.interventionPriorityScore,trend:p.trend,deliveryHealth:p.deliveryHealth,outcomeHealth:p.outcomeHealth})).sort((a,b)=>(b.priority??0)-(a.priority??0));}
