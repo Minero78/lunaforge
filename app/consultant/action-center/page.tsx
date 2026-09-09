@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPortfolioPredictiveIntelligence } from "@/lib/consulting/portfolio-predictive-intelligence";
+import { InterventionActionBoard } from "./InterventionActionBoard";
 
 export default async function ExecutiveActionCenterPage() {
   const portfolio = await getPortfolioPredictiveIntelligence();
@@ -33,6 +34,8 @@ export default async function ExecutiveActionCenterPage() {
           </article>
         )}
       </section>
+
+      <InterventionActionBoard />
     </div>
   </main>;
 }
