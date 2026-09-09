@@ -1,0 +1,1 @@
+export type FabricSignal={id:string;source:string;timestamp:string;value:unknown;tags:string[]};export type FabricContext={organizationId:string;signals:FabricSignal[];};
