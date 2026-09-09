@@ -1,0 +1,1 @@
+import type {FabricSignal} from "./types";export function ingestSignals(signals:FabricSignal[]){return signals.map(s=>({...s,ingestedAt:new Date().toISOString()}));}
