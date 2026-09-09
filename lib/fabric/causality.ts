@@ -1,0 +1,1 @@
+export function rankHypotheses(items:{cause:string;strength:number}[]){return [...items].sort((a,b)=>b.strength-a.strength);}
