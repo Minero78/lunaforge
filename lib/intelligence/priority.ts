@@ -1,0 +1,1 @@
+export function calculateDecisionPriority(input:{risk:number;impact:number;urgency:number;confidence:number}){const score=input.risk*.35+input.impact*.3+input.urgency*.25+(100-input.confidence)*.1;const priority=score>=80?"P0":score>=65?"P1":score>=45?"P2":"P3";return {score:Math.round(score),priority};}
