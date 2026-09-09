@@ -1,0 +1,1 @@
+export function deduplicateAlerts<T extends {id:string;fingerprint:string}>(alerts:T[]){const seen=new Set<string>();return alerts.filter(a=>seen.has(a.fingerprint)?false:(seen.add(a.fingerprint),true));}
