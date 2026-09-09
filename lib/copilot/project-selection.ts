@@ -1,0 +1,1 @@
+export function selectProjectsFromQuestion(question:string,projects:any[]){const q=question.toLowerCase();const matches=projects.filter(p=>q.includes(String(p.name).toLowerCase()));return matches.length?matches:projects.filter(p=>String(p.name).toLowerCase().split(/\s+/).some((w:string)=>w.length>3&&q.includes(w)));}
