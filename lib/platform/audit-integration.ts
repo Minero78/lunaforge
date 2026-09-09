@@ -1,0 +1,1 @@
+import {on} from "./events";import {persistAuditEvent} from "./persistent-audit";export function registerAuditIntegration(){on("AUDITABLE_ACTION",async event=>{await persistAuditEvent({organizationId:event.organizationId,action:"EVENT_PROCESSED",resource:event.type,metadata:event.payload});});}
