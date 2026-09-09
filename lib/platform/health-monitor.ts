@@ -1,0 +1,1 @@
+import {validateEnvironment} from "./env";export async function runHealthChecks(){const env=validateEnvironment();const checks=[{name:"environment",healthy:env.valid,details:env.missing},{name:"runtime",healthy:true,details:[]}];return {healthy:checks.every(c=>c.healthy),checks,timestamp:new Date().toISOString()};}
