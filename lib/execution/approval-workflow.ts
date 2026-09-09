@@ -1,0 +1,1 @@
+export function requiresApproval(action:any){return action.severity==="CRITICAL"||action.payload?.executiveImpact===true;}export function nextApprovalStatus(action:any){return requiresApproval(action)?"PENDING":"NOT_REQUIRED";}
