@@ -1,0 +1,1 @@
+export type KnowledgeTriple={subject:string;predicate:string;object:string};export function buildKnowledgeGraph(triples:KnowledgeTriple[]){return {triples,entities:[...new Set(triples.flatMap(t=>[t.subject,t.object]))]};}
