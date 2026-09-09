@@ -1,0 +1,1 @@
+export function createExecutiveBrief(input:{risk:number;health:number;priority:string}){return {headline:input.risk>=75?"Executive attention required":"Portfolio operating normally",...input};}
