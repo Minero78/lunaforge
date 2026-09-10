@@ -1,0 +1,1 @@
+export type EnterpriseGoal={id:string;name:string;priority:number;progress:number;};export function prioritizeGoals(goals:EnterpriseGoal[]){return [...goals].sort((a,b)=>b.priority-a.priority);}
