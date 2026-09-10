@@ -1,0 +1,1 @@
+export function planActions(objective:string,actions:string[]){return actions.map((action,index)=>({objective,action,sequence:index+1,status:'READY'}));}
