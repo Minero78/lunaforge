@@ -1,0 +1,1 @@
+export function buildProjectTimeline(snapshots:any[],projectId:string){return snapshots.map(s=>{const project=s.payload?.projects?.find((p:any)=>p.id===projectId);return project?{date:s.snapshot_date,...project}:null;}).filter(Boolean).sort((a:any,b:any)=>String(a.date).localeCompare(String(b.date)));}

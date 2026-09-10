@@ -1,0 +1,1 @@
+import {on} from "./events";import {createPersistentIncident} from "./persistent-incidents";export function registerIncidentAutomation(){on("PLATFORM_HEALTH_DEGRADED",async event=>{if(event.organizationId)await createPersistentIncident({organizationId:event.organizationId,title:"Platform health degraded",severity:"SEV2",metadata:event.payload});});}

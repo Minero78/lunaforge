@@ -1,0 +1,1 @@
+import {persistEvent} from "./persistent-events";import {DomainEvents} from "./domain-events";export async function publishCopilotInsight(input:{organizationId:string;projectId?:string;insight:string;recommendation:string;confidence:number}){return persistEvent({organizationId:input.organizationId,type:DomainEvents.COPILOT_INSIGHT,payload:input});}

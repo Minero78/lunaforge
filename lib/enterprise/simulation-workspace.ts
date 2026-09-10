@@ -1,0 +1,1 @@
+import {evaluateScenarios,Scenario} from "./scenario-planning";export function runStrategicSimulation(input:{baseline:number;scenarios:Scenario[]}){const results=evaluateScenarios(input.scenarios);return {baseline:input.baseline,results,bestScenario:results[0]??null,generatedAt:new Date().toISOString()};}

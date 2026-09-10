@@ -1,0 +1,8 @@
+import {NextRequest,NextResponse} from "next/server";
+import {getPortfolioPredictiveIntelligence} from "@/lib/consulting/portfolio-predictive-intelligence";
+import {selectProjectsFromQuestion} from "@/lib/copilot/project-selection";
+import {compareProjects} from "@/lib/copilot/project-comparison";
+import {analyzeRootCause} from "@/lib/copilot/root-cause";
+import {analyzeScenario} from "@/lib/copilot/scenario-analysis";
+import {rankRecommendations} from "@/lib/copilot/recommendation-ranking";
+export async function POST(request:NextRequest){try{const {question,mode}=await request.json();const portfolio=await getPortfolioPredictiveIntelligence();const selected=selectProjectsFromQuestion(question??"",portfolio.projects);const target=selected[0]??portfolio.projects[0];let answer:any;if(mode==="COMPARE")answer=compareProjects(selected.length?selected:portfolio.projects);else if(mode==="ROOT_CAUSE")answer=target?analyzeRootCause(target):null;else if(mode==="SCENARIO_NO_ACTION")answer=target?analyzeScenario(target,"NO_ACTION"):null;else if(mode==="SCENARIO_INTERVENE")answer=target?analyzeScenario(target,"INTERVENE"):null;else answer=rankRecommendations(portfolio.projects).slice(0,10);return NextResponse.json({mode:mode??"RECOMMENDATIONS",selectedProjects:selected.map(p=>({id:p.id,name:p.name})),answer});}catch(error){return NextResponse.json({error:error instanceof Error?error.message:"ADVANCED_COPILOT_FAILED"},{status:400});}}

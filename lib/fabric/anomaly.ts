@@ -1,0 +1,1 @@
+export function detectAnomaly(values:number[],value:number){const avg=values.reduce((a,b)=>a+b,0)/(values.length||1);const variance=values.reduce((a,b)=>a+(b-avg)**2,0)/(values.length||1);const z=Math.abs(value-avg)/(Math.sqrt(variance)||1);return {anomaly:z>3,z};}

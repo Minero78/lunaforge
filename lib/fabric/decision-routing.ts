@@ -1,0 +1,1 @@
+export function routeDecision(input:{risk:number;autonomy:number}){return input.risk>=80?'EXECUTIVE':input.autonomy>=3?'AUTONOMOUS':'MANAGER';}

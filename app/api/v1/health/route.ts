@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server";import {validateEnvironment} from "@/lib/platform/env";export async function GET(){const env=validateEnvironment();return NextResponse.json({status:env.valid?"healthy":"degraded",timestamp:new Date().toISOString(),environment:env.valid?"configured":"missing_variables",missing:env.missing},{status:env.valid?200:503});}

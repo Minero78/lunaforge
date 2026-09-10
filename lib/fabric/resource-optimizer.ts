@@ -1,0 +1,1 @@
+export function rankResources(items:{id:string;availability:number;skill:number}[]){return [...items].sort((a,b)=>(b.availability*b.skill)-(a.availability*a.skill));}

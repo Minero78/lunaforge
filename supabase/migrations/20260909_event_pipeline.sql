@@ -1,0 +1,4 @@
+create table if not exists platform_events(id uuid primary key default gen_random_uuid(),organization_id uuid,type text not null,payload jsonb not null default '{}'::jsonb,status text not null default 'PENDING',attempts integer not null default 0,created_at timestamptz not null default now(),processed_at timestamptz);
+create table if not exists webhook_deliveries(id uuid primary key default gen_random_uuid(),organization_id uuid not null,event_id uuid references platform_events(id),target_url text not null,status text not null default 'PENDING',attempts integer not null default 0,last_error text,created_at timestamptz not null default now(),delivered_at timestamptz);
+create index if not exists idx_platform_events_status_created on platform_events(status,created_at);
+create index if not exists idx_platform_events_org_type on platform_events(organization_id,type);

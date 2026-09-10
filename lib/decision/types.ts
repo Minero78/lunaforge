@@ -1,0 +1,1 @@
+export type DecisionRisk="LOW"|"MEDIUM"|"HIGH"|"CRITICAL";export type DecisionStatus="PROPOSED"|"APPROVAL_REQUIRED"|"APPROVED"|"EXECUTED"|"REJECTED";export type Decision={id:string;organizationId:string;projectId?:string;type:string;title:string;risk:DecisionRisk;confidence:number;status:DecisionStatus;recommendation:string;explanation:string;createdAt:string;};

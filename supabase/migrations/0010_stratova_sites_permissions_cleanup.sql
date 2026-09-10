@@ -1,0 +1,3 @@
+-- Stratova B46 follow-up.
+-- The previous migration file was corrected in-place before production rollout.
+-- This migration is intentionally empty to preserve ordered migration history.

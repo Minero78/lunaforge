@@ -1,0 +1,1 @@
+export function trustScore(input:{successRate:number;confidence:number;compliance:number}){return (input.successRate*.5+input.confidence*.3+input.compliance*.2);}

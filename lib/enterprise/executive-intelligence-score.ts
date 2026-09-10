@@ -1,0 +1,1 @@
+export function calculateExecutiveIntelligenceScore(input:{risk:number;health:number;execution:number;learning:number}){const score=Math.round((100-input.risk)*.3+input.health*.3+input.execution*.25+input.learning*.15);return {score:Math.max(0,Math.min(100,score)),classification:score>=80?"STRONG":score>=60?"STABLE":score>=40?"WATCH":"CRITICAL"};}

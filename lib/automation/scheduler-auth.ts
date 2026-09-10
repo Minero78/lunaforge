@@ -1,0 +1,2 @@
+import {NextRequest} from "next/server";
+export function assertSchedulerAuthorized(request:NextRequest){const secret=process.env.SCHEDULER_SECRET;if(!secret)throw new Error("SCHEDULER_SECRET_NOT_CONFIGURED");const token=request.headers.get("x-scheduler-secret");if(token!==secret)throw new Error("UNAUTHORIZED_SCHEDULER");}

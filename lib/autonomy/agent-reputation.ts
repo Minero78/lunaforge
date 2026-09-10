@@ -1,0 +1,1 @@
+export function reputationScore(outcomes:{success:boolean;impact:number}[]){if(!outcomes.length)return 50;return outcomes.reduce((n,o)=>n+(o.success?o.impact:-o.impact*.5),0)/outcomes.length+50;}

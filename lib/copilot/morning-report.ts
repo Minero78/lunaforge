@@ -1,0 +1,2 @@
+import {buildDailyBrief} from "./daily-brief";
+export function buildMorningIntelligenceReport(portfolio:any,alerts:any[]){const brief=buildDailyBrief(portfolio);return {generatedAt:new Date().toISOString(),headline:brief.headline,topPriority:brief.topPriority,criticalAlerts:alerts.filter(a=>a.severity==="CRITICAL"),highAlerts:alerts.filter(a=>a.severity==="HIGH"),deteriorating:brief.deteriorating,recommendedFocus:brief.recommendedFocus};}

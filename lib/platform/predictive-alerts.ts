@@ -1,0 +1,1 @@
+import {persistEvent} from "./persistent-events";import {DomainEvents} from "./domain-events";export async function createPredictiveAlert(input:{organizationId:string;projectId:string;prediction:string;confidence:number;impact:string}){return persistEvent({organizationId:input.organizationId,type:DomainEvents.PREDICTION_GENERATED,payload:input});}

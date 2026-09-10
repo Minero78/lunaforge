@@ -1,0 +1,1 @@
+export function monitorExecution(input:{completed:number;total:number;failures:number}){const progress=input.total?input.completed/input.total*100:0;return {progress,health:input.failures>0?'DEGRADED':progress>=100?'COMPLETE':'RUNNING'};}

@@ -1,0 +1,1 @@
+import {Role,assertPermission} from "./rbac";export function authorize(role:string|undefined,permission:string){if(!role)throw new Error("UNAUTHENTICATED");assertPermission(role as Role,permission);return true;}

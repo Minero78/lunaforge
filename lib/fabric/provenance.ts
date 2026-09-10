@@ -1,0 +1,1 @@
+export function provenance(source:string){return {source,recordedAt:new Date().toISOString(),traceId:crypto.randomUUID()};}

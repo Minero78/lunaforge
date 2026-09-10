@@ -1,0 +1,1 @@
+export function buildRiskTrendHistory(snapshots:any[]){return [...snapshots].sort((a,b)=>String(a.snapshot_date).localeCompare(String(b.snapshot_date))).map(s=>({date:s.snapshot_date,risk:Number(s.portfolio_risk_score??0),critical:Number(s.critical_interventions??0),high:Number(s.high_interventions??0),deteriorating:Number(s.deteriorating_projects??0)}));}

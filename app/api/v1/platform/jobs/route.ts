@@ -1,0 +1,1 @@
+import {NextRequest,NextResponse} from "next/server";import {enqueueJob,listJobs} from "@/lib/platform/jobs";export async function GET(){return NextResponse.json({jobs:listJobs()});}export async function POST(request:NextRequest){const body=await request.json();return NextResponse.json({job:enqueueJob(body.type,body.payload)},{status:201});}

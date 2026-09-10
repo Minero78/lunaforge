@@ -1,0 +1,1 @@
+export function buildAgentContext(input:{organizationId:string;goal:string;signals?:unknown[];memory?:unknown[]}){return {...input,createdAt:new Date().toISOString()};}

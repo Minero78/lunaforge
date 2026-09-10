@@ -1,0 +1,1 @@
+export function buildOrganizationScope(user:any, organizations:any[]){const allowed=organizations.filter(o=>user.organizationIds?.includes(o.id));return {userId:user.id,organizations:allowed.map(o=>({id:o.id,name:o.name,plan:o.plan??"STANDARD"})),count:allowed.length};}

@@ -1,0 +1,1 @@
+import crypto from "crypto";export function signWebhook(payload:string,secret:string){return crypto.createHmac("sha256",secret).update(payload).digest("hex");}export function verifyWebhook(payload:string,signature:string,secret:string){return crypto.timingSafeEqual(Buffer.from(signWebhook(payload,secret)),Buffer.from(signature));}

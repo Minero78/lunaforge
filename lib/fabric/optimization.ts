@@ -1,0 +1,1 @@
+export function optimize(items:{id:string;benefit:number;cost:number}[]){return [...items].sort((a,b)=>(b.benefit/b.cost)-(a.benefit/a.cost));}

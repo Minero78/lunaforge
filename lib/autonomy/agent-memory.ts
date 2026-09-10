@@ -1,0 +1,1 @@
+const store=new Map<string,unknown[]>();export function remember(agentId:string,item:unknown){store.set(agentId,[...(store.get(agentId)??[]),{item,at:new Date().toISOString()}]);}export function recall(agentId:string){return store.get(agentId)??[];}

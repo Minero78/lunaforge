@@ -1,0 +1,1 @@
+export function calculateOrganizationHealth(input:{portfolioHealth:number;executionHealth:number;governanceHealth:number;learningHealth:number}){const score=Math.round(input.portfolioHealth*.35+input.executionHealth*.3+input.governanceHealth*.2+input.learningHealth*.15);return {score,classification:score>=80?"HEALTHY":score>=60?"STABLE":score>=40?"AT_RISK":"CRITICAL"};}

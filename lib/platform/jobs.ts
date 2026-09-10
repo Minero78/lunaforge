@@ -1,0 +1,1 @@
+export type Job={id:string;type:string;payload:unknown;status:"QUEUED"|"RUNNING"|"COMPLETED"|"FAILED";createdAt:string;};const jobs:Job[]=[];export function enqueueJob(type:string,payload:unknown){const job={id:crypto.randomUUID(),type,payload,status:"QUEUED" as const,createdAt:new Date().toISOString()};jobs.push(job);return job;}export function listJobs(){return jobs;}
