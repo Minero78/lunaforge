@@ -1,0 +1,1 @@
+export type AgentStatus='IDLE'|'PLANNING'|'RUNNING'|'BLOCKED'|'FAILED'|'COMPLETED';export type EnterpriseAgent={id:string;name:string;capabilities:string[];status:AgentStatus;trust:number;reputation:number;};export type AgentTask={id:string;goal:string;priority:number;context?:Record<string,unknown>;};
