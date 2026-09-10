@@ -1,0 +1,1 @@
+export function transitionAgent(status:string,event:string){const transitions:Record<string,string>={START:'RUNNING',COMPLETE:'COMPLETED',FAIL:'FAILED',BLOCK:'BLOCKED',RESET:'IDLE'};return {from:status,to:transitions[event]??status,event};}
