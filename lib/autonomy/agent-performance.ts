@@ -1,0 +1,1 @@
+export function agentPerformance(input:{completed:number;failed:number;avgDuration:number}){const total=input.completed+input.failed;return {successRate:total?input.completed/total:0,efficiency:input.avgDuration?input.completed/input.avgDuration:0};}
