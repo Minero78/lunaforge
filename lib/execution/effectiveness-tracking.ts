@@ -1,0 +1,1 @@
+export function calculateEffectiveness(beforeRisk:number,afterRisk:number,completed:boolean){if(!completed)return null;const delta=beforeRisk-afterRisk;return Math.max(0,Math.min(100,Math.round(50+(delta*2))));}

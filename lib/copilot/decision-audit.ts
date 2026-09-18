@@ -1,0 +1,2 @@
+export type DecisionAudit={question:string;intent:string;analysis:any;recommendation:any;createdAt:string};
+export function createDecisionAudit(input:Omit<DecisionAudit,"createdAt">):DecisionAudit{return {...input,createdAt:new Date().toISOString()};}

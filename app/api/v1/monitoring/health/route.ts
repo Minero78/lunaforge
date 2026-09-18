@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server";import {runHealthChecks} from "@/lib/platform/health-monitor";export async function GET(){const result=await runHealthChecks();return NextResponse.json(result,{status:result.healthy?200:503});}

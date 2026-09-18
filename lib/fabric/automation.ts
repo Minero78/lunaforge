@@ -1,0 +1,1 @@
+export function createAutomation(input:{trigger:string;action:string}){return {...input,id:crypto.randomUUID(),enabled:true};}

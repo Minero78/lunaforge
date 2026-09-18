@@ -1,0 +1,1 @@
+import {evaluateActionSLA} from "./sla-monitor";export function detectOverdueActions(actions:any[],now=new Date()){return actions.filter(a=>evaluateActionSLA(a,now).overdue);}

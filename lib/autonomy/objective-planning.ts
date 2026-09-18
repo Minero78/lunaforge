@@ -1,0 +1,1 @@
+export function planObjectives(goal:string,objectives:string[]){return {goal,objectives:objectives.map((name,index)=>({id:index+1,name,status:'PLANNED'}))};}

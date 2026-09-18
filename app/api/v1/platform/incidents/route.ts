@@ -1,0 +1,1 @@
+import {NextRequest,NextResponse} from "next/server";import {createIncident,listIncidents} from "@/lib/platform/incidents";export async function GET(){return NextResponse.json({incidents:listIncidents()});}export async function POST(request:NextRequest){const body=await request.json();return NextResponse.json({incident:createIncident(body.title,body.severity)},{status:201});}

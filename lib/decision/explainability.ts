@@ -1,0 +1,1 @@
+import type {Decision} from "./types";export function explainDecision(decision:Decision,signals:string[]){return{decisionId:decision.id,summary:decision.explanation,confidence:decision.confidence,risk:decision.risk,signals,recommendation:decision.recommendation};}

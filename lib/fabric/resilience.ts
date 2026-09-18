@@ -1,0 +1,1 @@
+export function resilienceScore(input:{redundancy:number;recovery:number;stability:number}){return (input.redundancy+input.recovery+input.stability)/3;}

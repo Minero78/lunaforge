@@ -1,0 +1,1 @@
+export function autonomyLevel(input:{confidence:number;risk:number}){return input.risk>=80?0:input.confidence>=95?4:input.confidence>=85?3:input.confidence>=70?2:1;}

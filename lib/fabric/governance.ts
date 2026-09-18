@@ -1,0 +1,1 @@
+export function validateFabricAccess(input:{organizationId?:string;actorId?:string}){return {valid:Boolean(input.organizationId&&input.actorId)};}

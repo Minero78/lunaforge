@@ -1,0 +1,1 @@
+import {recommendBestAction} from "./best-action-recommendation";export function generateAdaptiveRecommendation(patterns:any[],context:any){const recommendation=recommendBestAction(patterns,context);return {...recommendation,mode:recommendation.confidence>=75?"HISTORICAL_OPTIMIZED":"EXPLORATORY",generatedAt:new Date().toISOString()};}

@@ -1,0 +1,1 @@
+export function consensus(votes:{option:string;weight:number}[]){const totals=new Map<string,number>();for(const v of votes)totals.set(v.option,(totals.get(v.option)??0)+v.weight);return [...totals.entries()].sort((a,b)=>b[1]-a[1])[0]??null;}

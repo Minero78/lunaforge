@@ -1,0 +1,1 @@
+export function evaluatePolicy(input:{risk:number;confidence:number}){return {allowed:input.risk<80&&input.confidence>=70,reason:input.risk>=80?'RISK_BLOCK':input.confidence<70?'CONFIDENCE_BLOCK':'APPROVED'};}

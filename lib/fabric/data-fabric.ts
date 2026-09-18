@@ -1,0 +1,1 @@
+import type {FabricSignal} from "./types";export function normalizeSignal(s:FabricSignal){return {...s,source:s.source.toLowerCase(),tags:[...new Set(s.tags)]};}

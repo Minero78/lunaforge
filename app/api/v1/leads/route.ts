@@ -1,6 +1,6 @@
 import { jsonError } from "../../../../lib/api/errors";
-import { getAssessment } from "../../../../lib/assessments/store";
-import { createLead } from "../../../../lib/leads/store";
+import { assessmentRepository } from "../../../../lib/assessments/service";
+import { createLead } from "../../../../lib/leads/service";
 import type { StratovaLeadInput } from "../../../../lib/leads/types";
 
 function nonEmptyString(value: unknown): value is string {
@@ -33,25 +33,38 @@ export async function POST(request: Request) {
     return jsonError("A valid business email is required.", 400, "INVALID_EMAIL");
   }
 
-  const assessment = getAssessment(payload.assessmentId);
-  if (!assessment || assessment.status !== "SCORED" || !assessment.result) {
-    return jsonError("A completed assessment is required.", 409, "ASSESSMENT_NOT_SCORED");
+  try {
+    const assessment = await assessmentRepository.getAssessment(payload.assessmentId);
+    if (!assessment || assessment.status !== "SCORED" || !assessment.result) {
+      return jsonError("A completed assessment is required.", 409, "ASSESSMENT_NOT_SCORED");
+    }
+
+    const lead = await createLead({
+      firstName: payload.firstName.trim(),
+      lastName: nonEmptyString(payload.lastName) ? payload.lastName.trim() : undefined,
+      email: payload.email.trim().toLowerCase(),
+      company: payload.company.trim(),
+      jobTitle: nonEmptyString(payload.jobTitle) ? payload.jobTitle.trim() : undefined,
+      country: nonEmptyString(payload.country) ? payload.country.trim() : undefined,
+      assessmentId: payload.assessmentId,
+    });
+
+    return Response.json({
+      id: lead.id,
+      assessmentId: lead.assessmentId,
+      status: "ASSESSED",
+      createdAt: lead.createdAt,
+    }, { status: 201 });
+  } catch (error) {
+    if (error instanceof Error && error.message === "AUTHENTICATION_REQUIRED") {
+      return jsonError("Authentication is required.", 401, "AUTHENTICATION_REQUIRED");
+    }
+    if (error instanceof Error && error.message === "ORGANIZATION_CONTEXT_REQUIRED") {
+      return jsonError("An organization is required.", 409, "ORGANIZATION_CONTEXT_REQUIRED");
+    }
+    if (error instanceof Error && error.message.startsWith("LEAD_CREATE_FAILED:")) {
+      return jsonError("Unable to persist lead.", 500, "LEAD_CREATE_FAILED");
+    }
+    return jsonError("Unable to create lead.", 500, "LEAD_CREATE_FAILED");
   }
-
-  const lead = createLead({
-    firstName: payload.firstName.trim(),
-    lastName: nonEmptyString(payload.lastName) ? payload.lastName.trim() : undefined,
-    email: payload.email.trim().toLowerCase(),
-    company: payload.company.trim(),
-    jobTitle: nonEmptyString(payload.jobTitle) ? payload.jobTitle.trim() : undefined,
-    country: nonEmptyString(payload.country) ? payload.country.trim() : undefined,
-    assessmentId: payload.assessmentId,
-  });
-
-  return Response.json({
-    id: lead.id,
-    assessmentId: lead.assessmentId,
-    status: "ASSESSED",
-    createdAt: lead.createdAt,
-  }, { status: 201 });
 }

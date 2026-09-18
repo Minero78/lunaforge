@@ -1,0 +1,1 @@
+export type Scenario={name:string;probability:number;impact:number;description:string};export function evaluateScenarios(scenarios:Scenario[]){return scenarios.map(s=>({...s,expectedValue:s.probability*s.impact})).sort((a,b)=>b.expectedValue-a.expectedValue);}

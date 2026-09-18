@@ -1,0 +1,1 @@
+export function monitorPortfolio(projects:{id:string;risk:number}[]){return projects.filter(p=>p.risk>=70).map(p=>({...p,alert:"RISK_MONITORING"}));}

@@ -1,0 +1,1 @@
+export function forecastTrend(values:number[]){if(values.length<2)return {forecast:values[0]??0,slope:0};const slope=(values.at(-1)!-values[0])/(values.length-1);return {forecast:values.at(-1)!+slope,slope};}

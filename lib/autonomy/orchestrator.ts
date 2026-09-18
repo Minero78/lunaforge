@@ -1,0 +1,1 @@
+import type {EnterpriseAgent,AgentTask} from './types';import {routeTask} from './agent-routing';export function orchestrateAgents(agents:EnterpriseAgent[],tasks:AgentTask[]){return tasks.map(task=>({task,agent:routeTask(agents,task)}));}

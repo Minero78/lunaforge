@@ -1,0 +1,1 @@
+export function deduplicateAlerts(existing:any[],generated:any[]){const keys=new Set(existing.filter(a=>a.status!=="RESOLVED").map(a=>String(a.project_id)+"::"+a.title+"::"+a.severity));return generated.filter(a=>!keys.has(String(a.projectId)+"::"+a.title+"::"+a.severity));}

@@ -1,0 +1,1 @@
+export function routeAlert(input:{severity:number;domain:string}){return {channel:input.severity>=85?"EXECUTIVE":input.severity>=60?"OPERATIONS":"MONITORING",...input};}

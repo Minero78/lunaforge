@@ -1,0 +1,1 @@
+export type AgentMessage={from:string;to:string;type:string;payload:unknown;at:string};const messages:AgentMessage[]=[];export function sendAgentMessage(m:Omit<AgentMessage,'at'>){const message={...m,at:new Date().toISOString()};messages.push(message);return message;}export function getAgentMessages(agentId:string){return messages.filter(m=>m.from===agentId||m.to===agentId);}

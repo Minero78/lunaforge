@@ -1,0 +1,1 @@
+export function buildTransformationMemory(input:{patterns:any[];rootCauses:any[];actions:any[]}){return {version:"1.0",learnedPatterns:input.patterns.length,knownRootCauses:input.rootCauses.length,successfulInterventions:input.actions.filter(a=>a.effectiveness_score>=70).length,updatedAt:new Date().toISOString()};}

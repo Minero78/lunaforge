@@ -1,0 +1,1 @@
+export function detectChanges(previous:any,current:any){const changes:any[]=[];for(const key of ["predictiveRiskScore","interventionPriorityScore","trend","deliveryHealth","outcomeHealth"]){if(previous?.[key]!==undefined&&previous[key]!==current?.[key])changes.push({field:key,before:previous[key],after:current[key]});}return changes;}
