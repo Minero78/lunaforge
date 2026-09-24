@@ -3,47 +3,37 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getOrganizationContext } from "@/lib/supabase/auth-context";
 import { escalateSeverity } from "@/lib/execution/escalation-engine";
 
-export async function PATCH(
-  r: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+type InterventionAction = { severity: string };
+
+export async function PATCH(r: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const body = await r.json();
+    const body = await r.json() as { escalate?: boolean; reason?: string; [key: string]: unknown };
     const context = await getOrganizationContext();
     const supabase = await createSupabaseServerClient();
 
     const { data: current, error: readError } = await supabase
-      .from("intervention_actions")
-      .select("*")
-      .eq("id", id)
-      .eq("organization_id", context.organizationId)
-      .maybeSingle();
+      .from("intervention_actions").select("*").eq("id", id)
+      .eq("organization_id", context.organizationId).maybeSingle();
 
     if (readError) throw readError;
-    if (!current) {
-      return NextResponse.json({ error: "ACTION_NOT_FOUND" }, { status: 404 });
-    }
+    if (!current) return NextResponse.json({ error: "ACTION_NOT_FOUND" }, { status: 404 });
 
-    const patch: Record<string, unknown> = {
-      ...body,
-      updated_at: new Date().toISOString(),
-    };
+    const typedCurrent = current as InterventionAction;
+    const patch: Record<string, unknown> = { ...body, updated_at: new Date().toISOString() };
+    delete patch.escalate;
+    delete patch.reason;
 
     if (body.escalate) {
       patch.severity = escalateSeverity(
-        current.severity,
+        typedCurrent.severity,
         body.reason ?? "Manual escalation",
       ).next;
     }
 
-    const { data, error } = await supabase
-      .from("intervention_actions")
-      .update(patch)
-      .eq("id", id)
-      .eq("organization_id", context.organizationId)
-      .select()
-      .single();
+    const { data, error } = await supabase.from("intervention_actions")
+      .update(patch).eq("id", id).eq("organization_id", context.organizationId)
+      .select().single();
 
     if (error) throw error;
     return NextResponse.json({ action: data });
