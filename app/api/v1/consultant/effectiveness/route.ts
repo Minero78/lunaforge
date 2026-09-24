@@ -13,11 +13,10 @@ export async function GET() {
     .select("*")
     .eq("organization_id", context.organizationId);
 
-  if (error) return NextResponse.json({ error: error.message });
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
 
-  const rows: InterventionRow[] = Array.isArray(data)
-    ? (data as InterventionRow[])
-    : [];
-
+  const rows: InterventionRow[] = Array.isArray(data) ? (data as InterventionRow[]) : [];
   return NextResponse.json({ learning: learnFromInterventions(rows) });
 }
