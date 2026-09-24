@@ -9,6 +9,6 @@ export async function GET() {
   const { data, error } = await supabase.from("intervention_actions").select("*")
     .eq("organization_id", context.organizationId);
   if (error) return NextResponse.json({ error: error.message });
-  const rows = Array.isArray(data) ? data : [];
+  const rows: Record<string, unknown>[] = Array.isArray(data) ? data as Record<string, unknown>[] : [];
   return NextResponse.json({ learning: learnFromInterventions(rows) });
 }
