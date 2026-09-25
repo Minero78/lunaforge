@@ -1,0 +1,1 @@
+import type {EnterpriseAgent} from './types';const agents=new Map<string,EnterpriseAgent>();export function registerAgent(agent:EnterpriseAgent){agents.set(agent.id,agent);return agent;}export function listAgents(){return [...agents.values()];}export function getAgent(id:string){return agents.get(id);}

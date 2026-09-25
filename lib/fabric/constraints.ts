@@ -1,0 +1,1 @@
+export function findConstraints(items:{name:string;value:number;limit:number}[]){return items.filter(x=>x.value>x.limit).map(x=>({...x,overage:x.value-x.limit}));}

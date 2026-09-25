@@ -1,0 +1,1 @@
+export function assignActionOwner(action:any,people:any[]){if(action.ownerId)return action.ownerId;const available=people.filter(p=>p.active!==false);const ranked=available.sort((a,b)=>Number(b.capacityScore??0)-Number(a.capacityScore??0));return ranked[0]?.id??null;}

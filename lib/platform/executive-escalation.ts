@@ -1,0 +1,1 @@
+import {persistEvent} from "./persistent-events";import {DomainEvents} from "./domain-events";export async function escalateToExecutive(input:{organizationId:string;projectId:string;reason:string;severity:"HIGH"|"CRITICAL";context?:unknown}){return persistEvent({organizationId:input.organizationId,type:DomainEvents.EXECUTIVE_ESCALATION,payload:input});}

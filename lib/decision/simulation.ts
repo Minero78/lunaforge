@@ -1,0 +1,1 @@
+import {scoreDecision} from "./scoring";export function simulateDecision(input:{confidence:number;impact:number;urgency:number;scenarios?:{impact:number;urgency:number}[]}){const base=scoreDecision(input);const scenarios=(input.scenarios??[]).map((s,i)=>({scenario:i+1,...s,result:scoreDecision({confidence:input.confidence,...s})}));return {base,scenarios};}

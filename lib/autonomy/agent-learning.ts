@@ -1,0 +1,1 @@
+export function learnFromOutcomes<T extends {success:boolean}>(outcomes:T[]){return {samples:outcomes.length,successRate:outcomes.length?outcomes.filter(x=>x.success).length/outcomes.length:0};}

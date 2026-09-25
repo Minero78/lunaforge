@@ -1,0 +1,1 @@
+export function unifyIntelligence(inputs:{score:number;weight:number}[]){const w=inputs.reduce((n,x)=>n+x.weight,0)||1;return inputs.reduce((n,x)=>n+x.score*x.weight,0)/w;}

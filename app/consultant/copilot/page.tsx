@@ -1,0 +1,6 @@
+import Link from "next/link";
+import {CopilotConsole} from "./CopilotConsole";
+
+export default function CopilotPage(){
+ return <main className="min-h-screen bg-slate-50 text-slate-950"><header className="border-b bg-white"><div className="mx-auto flex max-w-6xl justify-between px-6 py-5"><Link href="/" className="font-semibold">STRATOVA</Link><div className="flex gap-4 text-sm"><Link href="/consultant/action-center">Action Center</Link><Link href="/consultant/portfolio/learning">Learning</Link></div></div></header><div className="mx-auto max-w-6xl px-6 py-12"><p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-700">AI-assisted decision intelligence</p><h1 className="mt-3 text-4xl font-semibold tracking-tight">Transformation Intelligence Copilot</h1><p className="mt-3 max-w-2xl text-slate-600">Ask questions in natural language about portfolio priorities, predictive risks, interventions and executive focus.</p><div className="mt-8"><CopilotConsole/></div></div></main>;
+}

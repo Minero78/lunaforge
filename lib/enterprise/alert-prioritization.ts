@@ -1,0 +1,1 @@
+export type EnterpriseAlert={id:string;severity:number;impact:number;urgency:number;confidence:number};export function prioritizeAlerts(alerts:EnterpriseAlert[]){return alerts.map(a=>({...a,priority:a.severity*.4+a.impact*.3+a.urgency*.2+a.confidence*.1})).sort((a,b)=>b.priority-a.priority);}

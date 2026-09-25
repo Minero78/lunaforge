@@ -1,0 +1,1 @@
+const hours:any={CRITICAL:24,HIGH:72,MEDIUM:168,LOW:336};export function calculateDeadline(severity:string,from=new Date()){const date=new Date(from);date.setHours(date.getHours()+(hours[severity]??168));return date.toISOString();}

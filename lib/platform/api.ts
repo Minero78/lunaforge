@@ -1,0 +1,1 @@
+import {NextResponse} from "next/server";import {toErrorResponse} from "./errors";export async function apiHandler<T>(fn:()=>Promise<T>){try{return NextResponse.json(await fn());}catch(error){const e=toErrorResponse(error);return NextResponse.json(e.body,{status:e.status});}}

@@ -1,0 +1,1 @@
+import {createSupabaseServerClient} from "@/lib/supabase/server";export async function moveToDeadLetter(job:any,error:string){const s=await createSupabaseServerClient();const {data, error:dbError}=await s.from("platform_jobs").update({status:"FAILED",last_error:error,updated_at:new Date().toISOString()}).eq("id",job.id).select().single();if(dbError)throw dbError;return data;}

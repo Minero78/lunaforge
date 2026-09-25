@@ -1,0 +1,1 @@
+export function calculateTransformationMaturity(input:{governance:number;execution:number;intelligence:number;learning:number}){const score=Math.round((input.governance+input.execution+input.intelligence+input.learning)/4);const level=score>=85?"OPTIMIZING":score>=70?"MANAGED":score>=50?"DEFINED":score>=30?"DEVELOPING":"INITIAL";return {score,level,dimensions:input};}

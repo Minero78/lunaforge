@@ -1,0 +1,1 @@
+export function delegateTask(input:{taskId:string;from:string;to:string}){return {...input,status:'DELEGATED',at:new Date().toISOString()};}

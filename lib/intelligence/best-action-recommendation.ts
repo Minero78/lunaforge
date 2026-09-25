@@ -1,0 +1,1 @@
+export function recommendBestAction(patterns:any[],context:{rootCause?:string;severity?:string}){const match=patterns.find(p=>p.pattern===context.rootCause)||patterns[0];return match?{recommendedAction:match.bestAction,confidence:Math.min(95,50+match.sampleSize*8),evidence:match}:{recommendedAction:null,confidence:0,evidence:null};}

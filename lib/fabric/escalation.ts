@@ -1,0 +1,1 @@
+export function escalationLevel(score:number){return score>=90?'CEO':score>=75?'EXECUTIVE':score>=55?'DIRECTOR':'OPERATIONS';}

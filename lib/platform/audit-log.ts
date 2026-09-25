@@ -1,0 +1,1 @@
+import {logger} from "./logger";export type AuditEvent={organizationId?:string;actorId?:string;action:string;resource:string;resourceId?:string;metadata?:Record<string,unknown>};export async function audit(event:AuditEvent){logger.info("AUDIT_EVENT",event);return {id:crypto.randomUUID(),timestamp:new Date().toISOString(),...event};}

@@ -1,0 +1,1 @@
+export type DecisionRule={id:string;name:string;enabled:boolean;when:(input:any)=>boolean;then:(input:any)=>any;};const rules:DecisionRule[]=[];export function registerDecisionRule(rule:DecisionRule){rules.push(rule);}export function evaluateDecisionRules(input:any){return rules.filter(r=>r.enabled&&r.when(input)).map(r=>({ruleId:r.id,result:r.then(input)}));}

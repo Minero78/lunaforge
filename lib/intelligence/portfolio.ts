@@ -1,0 +1,1 @@
+export function analyzePortfolio(projects:{id:string;risk:number;health:number;value:number}[]){const totalValue=projects.reduce((n,p)=>n+p.value,0);const weightedRisk=totalValue?projects.reduce((n,p)=>n+p.risk*p.value,0)/totalValue:0;return {projects:projects.length,totalValue,weightedRisk,criticalProjects:projects.filter(p=>p.risk>=80||p.health<=30).map(p=>p.id)};}

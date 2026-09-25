@@ -1,0 +1,1 @@
+import type {AgentTask} from './types';export function planAgentTasks(tasks:AgentTask[]){return [...tasks].sort((a,b)=>b.priority-a.priority).map((task,index)=>({...task,step:index+1}));}

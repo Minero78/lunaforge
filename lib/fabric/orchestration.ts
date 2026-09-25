@@ -1,0 +1,1 @@
+export async function orchestrate<T>(steps:(()=>Promise<T>)[]){const results:T[]=[];for(const step of steps)results.push(await step());return results;}

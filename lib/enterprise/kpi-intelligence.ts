@@ -1,0 +1,1 @@
+export type KPI={name:string;value:number;target:number;weight?:number};export function analyzeKPIs(kpis:KPI[]){return kpis.map(k=>({...k,variance:k.value-k.target,achievement:k.target===0?100:k.value/k.target*100,status:k.value>=k.target?"ON_TARGET":"BELOW_TARGET"}));}

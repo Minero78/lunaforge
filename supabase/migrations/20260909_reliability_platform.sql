@@ -1,0 +1,9 @@
+create table if not exists platform_jobs(id uuid primary key default gen_random_uuid(),organization_id uuid not null,type text not null,payload jsonb not null default '{}'::jsonb,status text not null default 'QUEUED',attempts integer not null default 0,max_attempts integer not null default 3,run_after timestamptz not null default now(),last_error text,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists platform_notifications(id uuid primary key default gen_random_uuid(),organization_id uuid not null,type text not null,title text not null,message text not null,read_at timestamptz,created_at timestamptz not null default now());
+create table if not exists platform_incidents(id uuid primary key default gen_random_uuid(),organization_id uuid not null,title text not null,severity text not null,status text not null default 'OPEN',metadata jsonb not null default '{}'::jsonb,created_at timestamptz not null default now(),resolved_at timestamptz);
+create table if not exists platform_audit_events(id uuid primary key default gen_random_uuid(),organization_id uuid,actor_id uuid,action text not null,resource text not null,resource_id text,metadata jsonb not null default '{}'::jsonb,created_at timestamptz not null default now());
+create index if not exists idx_platform_jobs_queue on platform_jobs(status,run_after);
+create index if not exists idx_platform_jobs_org on platform_jobs(organization_id,created_at desc);
+create index if not exists idx_platform_notifications_org on platform_notifications(organization_id,created_at desc);
+create index if not exists idx_platform_incidents_org on platform_incidents(organization_id,status);
+create index if not exists idx_platform_audit_org on platform_audit_events(organization_id,created_at desc);

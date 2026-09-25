@@ -1,0 +1,1 @@
+import type {Decision,DecisionStatus} from "./types";export function requiresApproval(decision:Decision){return decision.risk==="HIGH"||decision.risk==="CRITICAL"||decision.confidence<75;}export function transitionDecision(decision:Decision,status:DecisionStatus){return {...decision,status};}

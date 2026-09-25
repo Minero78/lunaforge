@@ -1,0 +1,1 @@
+export function capacityStatus(used:number,total:number){const utilization=total?used/total*100:0;return {utilization,status:utilization>=90?'CRITICAL':utilization>=75?'HIGH':'NORMAL'};}

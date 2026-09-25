@@ -1,0 +1,1 @@
+export function requiresHumanReview(input:{risk:number;confidence:number}){return input.risk>=65||input.confidence<80;}

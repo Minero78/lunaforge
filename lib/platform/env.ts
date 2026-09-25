@@ -1,0 +1,1 @@
+const required=["NEXT_PUBLIC_SUPABASE_URL","NEXT_PUBLIC_SUPABASE_ANON_KEY"];export function validateEnvironment(){const missing=required.filter(k=>!process.env[k]);return {valid:missing.length===0,missing};}

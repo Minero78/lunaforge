@@ -1,0 +1,1 @@
+export function resolveConflict(options:{id:string;value:number;risk:number}[]){return [...options].sort((a,b)=>(b.value-b.risk)-(a.value-a.risk))[0]??null;}

@@ -1,0 +1,1 @@
+export function earlyWarning(input:{risk:number;trend:number}){return {warning:input.risk>=60&&input.trend>0,severity:Math.min(100,input.risk+input.trend)};}
